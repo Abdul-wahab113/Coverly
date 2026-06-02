@@ -50,3 +50,11 @@ export const getGeneration = (id) =>
 
 export const deleteGeneration = (id) =>
     api.delete(`/api/generate/${id}`).then((r) => r.data);
+
+// ─── Settings ─────────────────────────────────────────────────────────────────
+
+export const getSettings = () =>
+    api.get("/api/settings").then((r) => r.data);
+
+export const updateSettings = (data) =>
+    api.put("/api/settings", data).then((r) => r.data);

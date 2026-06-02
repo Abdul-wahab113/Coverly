@@ -7,6 +7,7 @@ import { config } from "./config.js";
 // Routes
 import authRoutes from "./routes/auth.route.js";
 import generateRoutes from "./routes/generate.route.js";
+import settingsRoutes from "./routes/settings.route.js";
 
 const app = express();
 
@@ -30,7 +31,7 @@ const globalLimiter = rateLimit({
 });
 
 const generateLimiter = rateLimit({
-  windowMs: 60  * 1000, // 1 hour
+  windowMs: 60 * 60 * 1000, // 1 hour
   max: 10,
   message: { error: "Generation limit reached. Try again in an hour." },
 });
@@ -51,6 +52,7 @@ app.get("/health", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/generate", generateLimiter, generateRoutes);
+app.use("/api/settings", settingsRoutes);
 
 // ─── 404 Handler ─────────────────────────────────────────────────────────────
 

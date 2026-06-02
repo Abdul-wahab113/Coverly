@@ -28,6 +28,10 @@ jobs:
         working-directory: backend
         run: npm ci
 
+      - name: Run backend tests
+        working-directory: backend
+        run: npm test
+
       - name: Validate environment config
         working-directory: backend
         run: |

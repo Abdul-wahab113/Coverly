@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { generate, getGeneration } from "../services/api";
+import { generate, getGeneration, getSettings, updateSettings } from "../services/api";
 import Navbar from "../components/Navbar";
 import {
     FileText, Mail, Copy, Check,
-    ArrowLeft, Loader
+    ArrowLeft, Loader, Save
 } from "lucide-react";
 
 const TONES = ["professional", "confident", "friendly"];
@@ -30,6 +30,8 @@ export default function Generate() {
     const [loadingView, setLoadingView] = useState(false);
     const [error, setError] = useState("");
     const [copied, setCopied] = useState(false);
+    const [savingDefaults, setSavingDefaults] = useState(false);
+    const [defaultsSaved, setDefaultsSaved] = useState(false);
 
     useEffect(() => {
         if (!viewId) return;
@@ -55,6 +57,21 @@ export default function Generate() {
             })
             .catch(() => setError("Failed to load generation"))
             .finally(() => setLoadingView(false));
+    }, [viewId]);
+
+    // Prefill the form with the user's saved defaults (new generations only)
+    useEffect(() => {
+        if (viewId) return;
+        getSettings()
+            .then((data) => {
+                const s = data.settings;
+                setForm((prev) => ({
+                    ...prev,
+                    userBackground: s.defaultBackground || prev.userBackground,
+                    tone: s.defaultTone || prev.tone,
+                }));
+            })
+            .catch(() => {}); // best-effort — ignore prefill failures
     }, [viewId]);
 
     const handleChange = (e) => {
@@ -88,6 +105,23 @@ export default function Generate() {
                 setError(err.response?.data?.error || "Generation failed. Try again.");
             })
             .finally(() => setLoading(false));
+    };
+
+    const handleSaveDefaults = () => {
+        setSavingDefaults(true);
+        setError("");
+        updateSettings({
+            defaultBackground: form.userBackground,
+            defaultTone: form.tone,
+        })
+            .then(() => {
+                setDefaultsSaved(true);
+                setTimeout(() => setDefaultsSaved(false), 2000);
+            })
+            .catch((err) => {
+                setError(err.response?.data?.error || "Failed to save defaults");
+            })
+            .finally(() => setSavingDefaults(false));
     };
 
     const handleCopy = () => {
@@ -308,6 +342,27 @@ export default function Generate() {
                                     {loading
                                         ? <><Loader size={14} strokeWidth={1.5} /> Generating...</>
                                         : <><FileText size={14} strokeWidth={1.5} /> Generate cover letter</>
+                                    }
+                                </button>
+                            )}
+
+                            {/* ── Save as Defaults ── */}
+                            {!viewId && (
+                                <button
+                                    className="btn-ghost"
+                                    onClick={handleSaveDefaults}
+                                    disabled={savingDefaults || !form.userBackground}
+                                    style={{
+                                        width: "100%",
+                                        marginTop: "8px",
+                                        justifyContent: "center",
+                                        padding: "10px",
+                                        fontSize: "13px",
+                                    }}
+                                >
+                                    {defaultsSaved
+                                        ? <><Check size={13} strokeWidth={1.5} /> Saved as defaults</>
+                                        : <><Save size={13} strokeWidth={1.5} /> Save as my defaults</>
                                     }
                                 </button>
                             )}
