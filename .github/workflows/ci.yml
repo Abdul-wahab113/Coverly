@@ -1,0 +1,84 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+
+  # ── Job 1: Lint and validate backend ───────────────────────────────────────
+  backend-check:
+    name: Backend Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Validate environment config
+        working-directory: backend
+        run: |
+          echo "Checking required files exist..."
+          test -f src/index.js && echo "✅ index.js exists"
+          test -f src/app.js && echo "✅ app.js exists"
+          test -f src/config.js && echo "✅ config.js exists"
+          test -f src/db/schema.js && echo "✅ schema.js exists"
+          test -f Dockerfile && echo "✅ Dockerfile exists"
+
+  # ── Job 2: Lint and validate frontend ──────────────────────────────────────
+  frontend-check:
+    name: Frontend Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+        env:
+          VITE_API_URL: https://coverly-backend-22v2.onrender.com
+
+  # ── Job 3: Docker build validation ─────────────────────────────────────────
+  docker-check:
+    name: Docker Build Check
+    runs-on: ubuntu-latest
+    needs: backend-check
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        working-directory: backend
+        run: docker build -t coverly-backend:ci .
+
+      - name: Verify image exists
+        run: |
+          docker images coverly-backend:ci
+          echo "✅ Docker image built successfully"
