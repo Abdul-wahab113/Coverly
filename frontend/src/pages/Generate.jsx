@@ -372,7 +372,7 @@ export default function Generate() {
 
                     {/* ── RIGHT — Output ── */}
                     <div
-                        className={!result && !loading ? "output-panel-empty" : ""}
+                        className={`output-panel${!result && !loading ? " output-panel-empty" : ""}`}
                         style={{
                             border: "0.5px solid var(--border)",
                             borderRadius: "var(--radius-lg)",

@@ -275,69 +275,54 @@ textarea.input {
   cursor: default;
 }
 
+/* ── Mobile-only labels (Dashboard cards) ──────────────────── */
+/* Hidden on desktop; shown when rows collapse to cards on mobile. */
+.mobile-label {
+  display: none;
+}
+
+/* ── Tablet & phone (≤ 768px) ──────────────────────────────── */
 @media (max-width: 768px) {
+
+  /* Bump base font on form controls to 16px so iOS Safari doesn't
+     zoom the page when a field gains focus. */
+  input,
+  textarea,
+  select,
+  .input,
+  .select {
+    font-size: 16px;
+  }
+
+  /* Larger, finger-friendly tap targets. */
+  .btn-primary,
+  .btn-ghost,
+  .btn-danger {
+    min-height: 40px;
+    padding: 10px 16px;
+    font-size: 14px;
+  }
 
   /* ── Navbar ── */
   .nav-user-name {
     display: none;
   }
 
-  /* ── Generate page two columns ── */
-  .two-col-grid {
-    grid-template-columns: 1fr !important;
-  }
-
-}
-
-
-@media (max-width: 768px) {
-
-  .nav-user-name {
-    display: none;
-  }
-
   .nav-link-text {
     display: none;
   }
 
+  /* ── Generate page two columns → single column ── */
   .two-col-grid {
     grid-template-columns: 1fr !important;
   }
 
-  /* Dashboard table → hide on mobile */
-  .dashboard-table-header {
-    display: none !important;
-  }
-
-  /* Dashboard rows → card layout on mobile */
-  .dashboard-row {
-    grid-template-columns: 1fr !important;
-    gap: 8px !important;
-    padding: 14px 16px !important;
-  }
-
-  .dashboard-row-actions {
-    width: 100% !important;
-    justify-content: flex-start !important;
-  }
-
-}
-
-
-@media (max-width: 768px) {
-
-  .nav-user-name {
-    display: none;
-  }
-
-  .nav-link-text {
-    display: none;
-  }
-
-  .two-col-grid {
+  /* ── Landing feature grid → single column ── */
+  .features-grid {
     grid-template-columns: 1fr !important;
   }
 
+  /* ── Dashboard table → stacked cards ── */
   .dashboard-table-header {
     display: none !important;
   }
@@ -353,9 +338,38 @@ textarea.input {
     justify-content: flex-start !important;
   }
 
-  /* Output panel — hide on mobile until result exists */
+  /* Inline labels so stacked card values keep their context. */
+  .mobile-label {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-right: 6px;
+  }
+
+  /* Generate output panel — hide on mobile until a result exists. */
   .output-panel-empty {
     display: none !important;
   }
 
+  /* The output panel shouldn't stick on mobile (it sits below the form). */
+  .output-panel {
+    position: static !important;
+  }
+}
+
+/* ── Small phones (≤ 480px) ────────────────────────────────── */
+@media (max-width: 480px) {
+
+  /* Reclaim horizontal space on narrow screens. */
+  .page-container {
+    padding: 0 1rem;
+  }
+
+  /* Tighten nav links so logo + links + avatar fit. */
+  .nav-links a {
+    padding: 6px 8px !important;
+  }
 }

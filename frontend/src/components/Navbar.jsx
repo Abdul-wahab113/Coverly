@@ -43,7 +43,7 @@ export default function Navbar() {
                 </Link>
 
                 {/* ── Nav Links ── */}
-                <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                <div className="nav-links" style={{ display: "flex", alignItems: "center", gap: "4px" }}>
                     <Link to="/dashboard" style={{
                         display: "flex",
                         alignItems: "center",

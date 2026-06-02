@@ -109,7 +109,7 @@ export default function Landing() {
                     What you get
                 </p>
 
-                <div style={{
+                <div className="features-grid" style={{
                     display: "grid",
                     gridTemplateColumns: "repeat(3, 1fr)",
                     gap: "1px",

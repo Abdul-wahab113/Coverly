@@ -208,11 +208,13 @@ export default function Dashboard() {
 
                                 {/* Company */}
                                 <span style={{ fontSize: "13px", color: "var(--text-secondary)" }}>
+                                    <span className="mobile-label">Company</span>
                                     {g.companyName}
                                 </span>
 
                                 {/* Tone */}
                                 <div>
+                                    <span className="mobile-label">Tone</span>
                                     <span className={`badge ${toneBadge(g.tone)}`}>
                                         {g.tone}
                                     </span>
@@ -225,6 +227,7 @@ export default function Dashboard() {
                                     gap: "5px",
                                     color: "var(--text-muted)",
                                 }}>
+                                    <span className="mobile-label">Date</span>
                                     <Calendar size={12} strokeWidth={1.5} />
                                     <span style={{ fontSize: "12px" }}>{formatDate(g.createdAt)}</span>
                                 </div>
